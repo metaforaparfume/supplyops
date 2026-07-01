@@ -72,6 +72,11 @@ export default function OrderDetailPage() {
           customsStatus={order.customsStatus}
           lspStatus={order.lspStatus}
           deliveryStatus={order.deliveryStatus}
+          poNumber={order.pos?.[0]?.poNumber}
+          poStatus={order.pos?.[0]?.status}
+          poReleaseDate={order.pos?.[0]?.releaseDate ? new Date(order.pos[0].releaseDate).toLocaleDateString() : undefined}
+          createdAt={new Date(order.createdAt).toLocaleDateString()}
+          createdBy={order.user?.name}
         />
 
         <div className="space-y-4">
