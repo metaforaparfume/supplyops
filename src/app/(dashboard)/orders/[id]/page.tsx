@@ -8,14 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-
-const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-500",
-  Clarified: "bg-blue-500",
-  "PO Released": "bg-yellow-500",
-  "In Delivery": "bg-orange-500",
-  Closed: "bg-green-500",
-}
+import ProcessTracker from "@/components/processtracker"
+import { STATUS_COLORS } from "@/lib/orderstages"
 
 export default function OrderDetailPage() {
   const { id } = useParams()
@@ -72,19 +66,59 @@ export default function OrderDetailPage() {
         </Badge>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm">Customs</CardTitle></CardHeader>
-          <CardContent><Badge variant={order.customsStatus === "Cleared" ? "default" : "secondary"}>{order.customsStatus}</Badge></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm">LSP</CardTitle></CardHeader>
-          <CardContent><Badge variant={order.lspStatus === "Delivered" ? "default" : "secondary"}>{order.lspStatus}</Badge></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm">Delivery</CardTitle></CardHeader>
-          <CardContent><Badge variant={order.deliveryStatus === "Completed" ? "default" : "secondary"}>{order.deliveryStatus}</Badge></CardContent>
-        </Card>
+      <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
+        <ProcessTracker
+          currentStage={order.status}
+          customsStatus={order.customsStatus}
+          lspStatus={order.lspStatus}
+          deliveryStatus={order.deliveryStatus}
+        />
+
+        <div className="space-y-4">
+          <Card>
+            <CardHeader><CardTitle>Order Info</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Status</span>
+                <Badge className={STATUS_COLORS[order.status]}>{order.status}</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">CPO Ref</span>
+                <span className="text-sm font-medium">{order.cpoRef}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">WBS Ref</span>
+                <span className="text-sm font-medium">{order.wbsRef}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Officer</span>
+                <span className="text-sm font-medium">{order.user?.name || "-"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Created</span>
+                <span className="text-sm font-medium">{new Date(order.createdAt).toLocaleDateString()}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader><CardTitle>Sub-statuses</CardTitle></CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Customs</span>
+                <Badge variant={order.customsStatus === "Cleared" ? "default" : "secondary"}>{order.customsStatus}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">LSP</span>
+                <Badge variant={order.lspStatus === "Delivered" ? "default" : "secondary"}>{order.lspStatus}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Delivery</span>
+                <Badge variant={order.deliveryStatus === "Completed" ? "default" : "secondary"}>{order.deliveryStatus}</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <Card>

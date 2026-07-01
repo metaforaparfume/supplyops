@@ -7,14 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
-
-const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-500",
-  Clarified: "bg-blue-500",
-  "PO Released": "bg-yellow-500",
-  "In Delivery": "bg-orange-500",
-  Closed: "bg-green-500",
-}
+import { STATUS_COLORS } from "@/lib/orderstages"
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([])
