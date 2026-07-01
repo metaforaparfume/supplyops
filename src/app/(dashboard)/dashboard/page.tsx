@@ -202,7 +202,7 @@ export default function DashboardPage() {
                     <TableCell>{item.qtySystem}</TableCell>
                     <TableCell>{item.minStock}</TableCell>
                     <TableCell>
-                      <Progress value={(item.qtySystem / item.minStock) * 100} className="w-20" />
+                      <Progress value={(item.qtySystem / item.minStock) * 100} className="w-32" />
                     </TableCell>
                   </TableRow>
                 ))}
