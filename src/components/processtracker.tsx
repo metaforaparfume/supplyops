@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils"
 import {
   ORDER_STAGES,
   STAGE_INFO,
-  getStageIndex,
   isStageCompleted,
   isStageCurrent,
   type OrderStage,
