@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("Supply Officer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders         Order[]
+  stockMovements StockMovement[]
+  activityLogs   ActivityLog[]
+  callOffs       CallOff[]
+}
+
+model Order {
+  id             Int      @id @default(autoincrement())
+  cpoRef         String   @unique
+  wbsRef         String
+  boqDetails     Json
+  status         String   @default("Draft")
+  customsStatus  String   @default("Pending")
+  lspStatus      String   @default("Pending")
+  deliveryStatus String   @default("Pending")
+  notes          String?
+  userId         Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id])
+  pos      PurchaseOrder[]
+  callOffs CallOff[]
+}
+
+model PurchaseOrder {
+  id          Int      @id @default(autoincrement())
+  poNumber    String   @unique
+  orderId     Int
+  status      String   @default("Draft")
+  releaseDate DateTime?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model StockItem {
+  id             Int      @id @default(autoincrement())
+  name           String
+  warehouse      String
+  qtySystem      Int      @default(0)
+  qtyPhysical    Int      @default(0)
+  unit           String   @default("pcs")
+  minStock       Int      @default(0)
+  lastCountDate  DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  movements StockMovement[]
+}
+
+model StockMovement {
+  id          Int      @id @default(autoincrement())
+  stockItemId Int
+  type        String
+  qtyChange   Int
+  qtyBefore   Int
+  qtyAfter    Int
+  notes       String?
+  userId      Int
+  createdAt   DateTime @default(now())
+
+  stockItem StockItem @relation(fields: [stockItemId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model CallOff {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  itemName  String
+  qty       Int
+  date      DateTime @default(now())
+  status    String   @default("Planned")
+  notes     String?
+  userId    Int
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+  user  User   @relation(fields: [userId], references: [id])
+}
+
+model ActivityLog {
+  id             Int      @id @default(autoincrement())
+  activityType   String
+  referenceId    Int?
+  referenceType  String?
+  description    String
+  userId         Int
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
