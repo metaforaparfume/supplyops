@@ -1,0 +1,22 @@
+appId: com.supplyops.app
+productName: SupplyOps
+directories:
+  output: electron-dist
+files:
+  - main.js
+  - preload.js
+  - ".next/**/*"
+  - public/**/*
+  - node_modules/**/*
+win:
+  target: nsis
+  icon: public/icons/icon-512.svg
+mac:
+  target: dmg
+  icon: public/icons/icon-512.svg
+linux:
+  target: AppImage
+  icon: public/icons/icon-512.svg
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

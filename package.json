@@ -2,12 +2,20 @@
   "name": "supplyops",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "npx tsx prisma/seed.ts"
+    "seed": "npx tsx prisma/seed.ts",
+    "electron:dev": "next build && electron .",
+    "electron:build": "next build && electron-builder",
+    "capacitor:init": "npx cap init SupplyOps com.supplyops.app",
+    "capacitor:add": "npx cap add android",
+    "capacitor:sync": "npx cap sync",
+    "capacitor:open": "npx cap open android",
+    "capacitor:build": "npx cap build android"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -34,10 +42,15 @@
     "tweetsodium": "^0.0.4"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
