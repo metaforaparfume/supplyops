@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupplyOps - Offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      max-width: 380px;
+      width: 100%;
+    }
+    .icon {
+      width: 72px;
+      height: 72px;
+      background: #1e293b;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #fff;
+    }
+    h1 { font-size: 20px; margin-bottom: 8px; }
+    p { color: #64748b; font-size: 14px; line-height: 1.5; margin-bottom: 24px; }
+    button {
+      background: #1e293b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #334155; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">SO</div>
+    <h1>Koneksi Terputus</h1>
+    <p>SupplyOps membutuhkan koneksi internet untuk memuat data. Periksa koneksi Anda dan coba lagi.</p>
+    <button onclick="window.location.reload()">Coba Lagi</button>
+  </div>
+  <script>window.addEventListener("online", () => window.location.reload())</script>
+</body>
+</html>
