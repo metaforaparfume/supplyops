@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +24,11 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Build Next.js
         run: npm run build
@@ -41,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SupplyOps-Windows
-          path: electron-dist/**/*
+          path: electron-dist\**\*
