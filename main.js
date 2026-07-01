@@ -1,34 +1,36 @@
 const { app, BrowserWindow } = require("electron")
-const { spawn } = require("child_process")
+const { fork } = require("child_process")
 const path = require("path")
 
 let mainWindow
-let serverProcess
+let serverChild
 
 const PORT = 3456
 
 function startServer() {
-  return new Promise((resolve, reject) => {
-    const nextDir = path.join(__dirname, "node_modules", ".bin", "next.cmd")
-    serverProcess = spawn(nextDir, ["start", "-p", String(PORT)], {
+  return new Promise((resolve) => {
+    const nextBin = path.join(__dirname, "node_modules", "next", "dist", "bin", "next")
+
+    serverChild = fork(nextBin, ["start", "-p", String(PORT)], {
       env: { ...process.env },
       stdio: "pipe",
-      shell: true,
     })
 
-    serverProcess.stdout.on("data", (data) => {
+    serverChild.on("message", (msg) => {
+      if (msg && (msg.ready || String(msg).includes(PORT))) resolve()
+    })
+
+    serverChild.stdout?.on("data", (data) => {
       const msg = data.toString()
       console.log("[next]", msg)
-      if (msg.includes("ready") || msg.includes("started") || msg.includes(PORT)) resolve()
+      if (msg.includes("ready") || msg.includes(PORT)) resolve()
     })
 
-    serverProcess.stderr.on("data", (data) => {
+    serverChild.stderr?.on("data", (data) => {
       console.error("[next]", data.toString())
     })
 
-    serverProcess.on("error", reject)
-
-    setTimeout(resolve, 8000)
+    setTimeout(resolve, 10000)
   })
 }
 
@@ -56,7 +58,7 @@ app.whenReady().then(async () => {
 })
 
 app.on("window-all-closed", () => {
-  if (serverProcess) serverProcess.kill()
+  if (serverChild && !serverChild.killed) serverChild.kill()
   if (process.platform !== "darwin") app.quit()
 })
 
