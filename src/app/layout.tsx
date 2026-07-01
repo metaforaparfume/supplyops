@@ -18,8 +18,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icons/icon-192.svg" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/icons/icon-512.svg" />
+        <link rel="icon" href="/icons/icon-192.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/icons/icon-512.png" />
       </head>
       <body className="antialiased">
         <PWARegister />
