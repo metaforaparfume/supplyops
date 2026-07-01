@@ -29,8 +29,11 @@ export default function InventoryPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Inventory</h1>
         <div className="flex gap-2">
+          <Link href="/inventory/cycle-count">
+            <Button variant="outline">Cycle Count (3-Round)</Button>
+          </Link>
           <Link href="/inventory/reconciliation">
-            <Button variant="outline">Reconciliation</Button>
+            <Button variant="outline">Quick Reconciliation</Button>
           </Link>
           <Link href="/inventory/adjustment">
             <Button variant="outline">Adjustment / Scrap</Button>

@@ -17,10 +17,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders         Order[]
-  stockMovements StockMovement[]
-  activityLogs   ActivityLog[]
-  callOffs       CallOff[]
+  orders              Order[]
+  stockMovements      StockMovement[]
+  activityLogs        ActivityLog[]
+  callOffs            CallOff[]
+  cycleCountSessions  CycleCountSession[]  @relation("initiator")
+  cycleCountRounds    CycleCountRound[]    @relation("counter")
+  approvedClaimLetters ClaimLetter[]       @relation("approver")
 }
 
 model Order {
@@ -67,7 +70,8 @@ model StockItem {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  movements StockMovement[]
+  movements          StockMovement[]
+  cycleCountSessions CycleCountSession[]
 }
 
 model StockMovement {
@@ -110,4 +114,67 @@ model ActivityLog {
   createdAt      DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model CycleCountSession {
+  id            Int      @id @default(autoincrement())
+  stockItemId   Int
+  warehouse     String
+  initiatorId   Int
+  status        String   @default("In Progress")
+  finalVariance Int      @default(0)
+  claimStatus   String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  stockItem   StockItem      @relation(fields: [stockItemId], references: [id])
+  initiator   User           @relation("initiator", fields: [initiatorId], references: [id])
+  rounds      CycleCountRound[]
+  claimLetter ClaimLetter?
+}
+
+model CycleCountRound {
+  id           Int      @id @default(autoincrement())
+  sessionId    Int
+  roundNumber  Int
+  qtySystem    Int
+  qtyPhysical  Int
+  variance     Int
+  countedById  Int
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  session    CycleCountSession @relation(fields: [sessionId], references: [id])
+  countedBy  User              @relation("counter", fields: [countedById], references: [id])
+}
+
+model ClaimLetter {
+  id            Int       @id @default(autoincrement())
+  sessionId     Int       @unique
+  description   String
+  qtyMissing    Int
+  status        String    @default("Draft")
+  submittedAt   DateTime?
+  approvedAt    DateTime?
+  approvedById  Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  session    CycleCountSession @relation(fields: [sessionId], references: [id])
+  approvedBy User?             @relation("approver", fields: [approvedById], references: [id])
+  creditNote CreditNote?
+}
+
+model CreditNote {
+  id            Int       @id @default(autoincrement())
+  claimLetterId Int       @unique
+  cnNumber      String    @unique
+  amount        Float
+  status        String    @default("Draft")
+  postedAt      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  claimLetter ClaimLetter @relation(fields: [claimLetterId], references: [id])
 }
